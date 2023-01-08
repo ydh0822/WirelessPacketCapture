@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/google/gopacket"
 	_ "github.com/google/gopacket/layers"
@@ -37,6 +38,8 @@ func WPC_() {
 		handle, handle.LinkType()).Packets()
 	for pkt := range packets {
 		// Your analysis here!
+		fmt.Print("\033[H\033[2J")
 		fmt.Println(pkt)
+		time.Sleep(time.Second * 1)
 	}
 }
