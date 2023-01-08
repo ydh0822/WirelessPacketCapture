@@ -34,12 +34,22 @@ func WPC_() {
 	// 	panic(err)
 	// }
 
+	if err := handle.SetLinkType(2); err != nil {
+		panic(err)
+	}
+
 	packets := gopacket.NewPacketSource(
 		handle, handle.LinkType()).Packets()
 	for pkt := range packets {
 		// Your analysis here!
 		fmt.Print("\033[H\033[2J")
 		fmt.Println(pkt)
+		fmt.Print("Contents = ")
+		fmt.Println(pkt.Layer(4).LayerContents())
+		fmt.Print("Payload = ")
+		fmt.Println(pkt.Layer(4).LayerPayload())
+		fmt.Println(pkt.Layer(1).LayerType())
+
 		time.Sleep(time.Second * 1)
 	}
 }
