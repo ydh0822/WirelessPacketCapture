@@ -34,10 +34,6 @@ func WPC_() {
 	// 	panic(err)
 	// }
 
-	if err := handle.SetLinkType(2); err != nil {
-		panic(err)
-	}
-
 	packets := gopacket.NewPacketSource(
 		handle, handle.LinkType()).Packets()
 	for pkt := range packets {
@@ -49,6 +45,8 @@ func WPC_() {
 		fmt.Print("Payload = ")
 		fmt.Println(pkt.Layer(4).LayerPayload())
 		fmt.Println(pkt.Layer(1).LayerType())
+		fmt.Println(pkt.Layer(1).LayerContents())
+		fmt.Println(pkt.Layer(1))
 
 		time.Sleep(time.Second * 1)
 	}
