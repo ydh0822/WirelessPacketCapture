@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-	fmt.Println("test")
 	WPC_()
 }
 
@@ -20,7 +19,10 @@ const (
 
 func WPC_() {
 	fmt.Println("__start WPC__")
-	handle, err := pcap.OpenLive("mon0", defaultSnapLen, true,
+	var name string
+	fmt.Printf("Input Wireless interface Name : ")
+	fmt.Scanln(&name)
+	handle, err := pcap.OpenLive(name, defaultSnapLen, true,
 		pcap.BlockForever)
 	if err != nil {
 		panic(err)
