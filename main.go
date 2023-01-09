@@ -35,6 +35,7 @@ func WPC_() {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("handler========================================")
 	println(handle)
 	fmt.Println("========================================")
 	defer handle.Close()
@@ -44,12 +45,14 @@ func WPC_() {
 	// }
 	packets := gopacket.NewPacketSource(
 		handle, handle.LinkType()).Packets()
-
+	fmt.Println("packets========================================")
 	fmt.Println(packets)
 	fmt.Println("========================================")
 	for pkt := range packets {
 		// fmt.Print("\033[H\033[2J")
+		fmt.Println("pkt========================================")
 		fmt.Println(pkt)
+		fmt.Println("========================================")
 		// time.Sleep(time.Second * 1)
 	}
 }
