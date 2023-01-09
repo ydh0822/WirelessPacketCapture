@@ -95,6 +95,9 @@ func WPC_() {
 		handle, handle.LinkType()).Packets()
 	for pkt := range packets {
 		// fmt.Print("\033[H\033[2J")
+		if len(pkt.Data()) < 60 {
+			continue
+		}
 		fmt.Println("pkt========================================")
 		// fmt.Println(pkt)
 		fmt.Println(pkt.Data())
