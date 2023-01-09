@@ -6,7 +6,6 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/google/gopacket"
 	_ "github.com/google/gopacket/layers"
@@ -189,7 +188,7 @@ func WPC_() {
 						tmp_int_ch := strconv.FormatInt(int64(packets_list[k].CHANNEL), 10)
 						fmt.Println(center(packets_list[k].BSSID, 30-len(packets_list[k].BSSID), " "), center(packets_list[k].ESSID, 30-len(packets_list[k].ESSID), " "), center(tmp_int, 28, " "), center(tmp_int_ch, 29, " "))
 					}
-					time.Sleep(300 * time.Millisecond)
+					// time.Sleep(300 * time.Millisecond)
 				} else {
 					continue
 				}
