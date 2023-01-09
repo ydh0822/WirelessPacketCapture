@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
+	"os/exec"
+	"strconv"
 
 	"github.com/google/gopacket"
 	_ "github.com/google/gopacket/layers"
@@ -12,46 +15,69 @@ func main() {
 	WPC_()
 }
 
-// func (p *PacketSource) H4uN_Packets(int channels) chan Packet {
-// 	if p.c == nil {
-// 		p.c = make(chan Packet, 1000)
-// 		go p.packetsToChannel()
-// 	}
-// 	return p.c
-// }
+func ExcuteCMD(script string, arg ...string) {
+	cmd := exec.Command(script, arg...)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println(string(output))
+		fmt.Println((err))
+	} else {
+		fmt.Println(string(output))
+	}
+}
 
 const (
-	// The same default as tcpdump.
 	defaultSnapLen = 262144
 )
+
+type H4uN_packet struct {
+	Radiotap                  [24]byte
+	Dot11_Frame_Control_Field []byte
+}
+
+func New_H4uN_packet() *H4uN_packet {
+	New_pack := H4uN_packet{}
+	s_temp := "0008"
+	data, err := hex.DecodeString(s_temp)
+	if err != nil {
+		panic(err)
+	}
+	New_pack.Dot11_Frame_Control_Field = data
+	return &New_pack
+}
 
 func WPC_() {
 	fmt.Println("__start WPC__")
 	var name string
+	var CH int
 	fmt.Printf("Input Wireless interface Name : ")
 	fmt.Scanln(&name)
+	fmt.Printf("Input Packet Channel : (Hopping=0)")
+	fmt.Scanln(&CH)
+
+	if CH != 0 {
+		CH_str := strconv.Itoa(CH)
+		ExcuteCMD("sudo", "iwconfig", name, CH_str)
+	}
+
+	H_pack := New_H4uN_packet()
+	fmt.Println("H_pack파싱")
+	fmt.Println(H_pack)
+
 	handle, err := pcap.OpenLive(name, defaultSnapLen, true,
 		pcap.BlockForever)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("handler========================================")
-	println(handle)
-	fmt.Println("========================================")
 	defer handle.Close()
 
-	// if err := handle.SetBPFFilter("port 3030"); err != nil {
-	// 	panic(err)
-	// }
 	packets := gopacket.NewPacketSource(
 		handle, handle.LinkType()).Packets()
-	fmt.Println("packets========================================")
-	fmt.Println(packets)
-	fmt.Println("========================================")
 	for pkt := range packets {
 		// fmt.Print("\033[H\033[2J")
 		fmt.Println("pkt========================================")
-		fmt.Println(pkt)
+		// fmt.Println(pkt)
+		fmt.Println(pkt.Data())
 		fmt.Println("========================================")
 		// time.Sleep(time.Second * 1)
 	}
