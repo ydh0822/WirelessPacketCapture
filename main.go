@@ -161,7 +161,7 @@ func WPC_() {
 						flag++
 					}
 				}
-				if flag == 0 {
+				if flag != 0 {
 					packets_list = append(packets_list, temp_pkt_list)
 				}
 				fmt.Println(center("BSSID", 25, " "), center("ESSID", 25, " "), center("ESSID LENGTH", 18, " "))
