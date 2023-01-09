@@ -132,7 +132,8 @@ func WPC_() {
 
 			// fmt.Println(pkt)
 			fmt.Print("\033[H\033[2J")
-			fmt.Println("====== Raw Data Stream ==================== Interface : ", name, "===================== Channel : ", CH_rand, "==================")
+			fmt.Println("========================================== Interface : ", name, "===================== Channel : ", CH_rand, "==================")
+			fmt.Println("")
 			// fmt.Println(pkt.Data())
 			// fmt.Println("============================================================================")
 			Pkt_Frame := []byte{pkt.Data()[9], pkt.Data()[10], pkt.Data()[11], pkt.Data()[12]}
