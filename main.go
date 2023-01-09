@@ -88,7 +88,7 @@ func WPC_() {
 	fmt.Scanln(&CH)
 	if CH != 0 {
 		CH_str := strconv.Itoa(CH)
-		ExcuteCMD("sudo", "iwconfig", name, CH_str)
+		ExcuteCMD("sudo", "iwconfig", name, "channel", CH_str)
 	} else {
 
 		H_pack := New_H4uN_packet()
@@ -107,12 +107,12 @@ func WPC_() {
 		count := 0
 		CH_rand := 1
 		for pkt := range packets {
-			if count%10 == 0 {
+			if count%20 == 0 {
 				if CH_rand == 20 {
 					CH_rand = 1
 				}
 				tmp_CH := strconv.FormatInt(int64(CH_rand), 10)
-				ExcuteCMD("sudo", "iwconfig", name, tmp_CH)
+				ExcuteCMD("sudo", "iwconfig", name, "channel", tmp_CH)
 				CH_rand, err = strconv.Atoi(tmp_CH)
 				if err != nil {
 					fmt.Println(err)
