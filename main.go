@@ -33,8 +33,7 @@ const (
 type H4uN_packet struct {
 	Radiotap                  [9]byte
 	Dot11_Frame_Control_Field []byte
-	SSID                      []byte
-	SSID_Footter              []byte
+	ESSID_Footter             []byte
 }
 
 func New_H4uN_packet() *H4uN_packet {
@@ -50,7 +49,7 @@ func New_H4uN_packet() *H4uN_packet {
 		panic(err)
 	}
 	New_pack.Dot11_Frame_Control_Field = data1
-	New_pack.SSID_Footter = data2
+	New_pack.ESSID_Footter = data2
 	return &New_pack
 }
 
@@ -103,17 +102,20 @@ func WPC_() {
 		fmt.Println(pkt.Data())
 		Pkt_Frame := []byte{pkt.Data()[9], pkt.Data()[10], pkt.Data()[11], pkt.Data()[12]}
 		if CheckEq(H_pack.Dot11_Frame_Control_Field, Pkt_Frame) {
-			fmt.Println("Find 0x0800!! It is 802.11 Packet")
-			CheckVal := 61 + int(pkt.Data()[61])
+			fmt.Println("Find 0x08000000!! It is 802.11 Packet")
+			CheckVal := 62 + int(pkt.Data()[61])
 			Name_Footer_Frame := []byte{pkt.Data()[CheckVal], pkt.Data()[CheckVal+1], pkt.Data()[CheckVal+2], pkt.Data()[CheckVal+3]}
 			fmt.Println(Name_Footer_Frame)
-			temp_Frame := []byte{}
-			for i := 0; i < int(pkt.Data()[61]); i++ {
-				temp_Frame = append(temp_Frame, pkt.Data()[62+i])
+			if CheckEq(H_pack.ESSID_Footter, Name_Footer_Frame) {
+				fmt.Println("Find 0x01088284!! It is name Field!!")
+				temp_Frame := []byte{}
+				for i := 0; i < int(pkt.Data()[61]); i++ {
+					temp_Frame = append(temp_Frame, pkt.Data()[62+i])
+				}
+				fmt.Println(temp_Frame)
+				Name_Frame_Data := string(temp_Frame[:])
+				fmt.Println("ESSID =", Name_Frame_Data, "ESSID_LEN = ", int(pkt.Data()[61]))
 			}
-			fmt.Println(temp_Frame)
-			Name_Frame_Data := string(temp_Frame[:])
-			fmt.Println("String =", Name_Frame_Data)
 		}
 		fmt.Println("========================================")
 		// time.Sleep(time.Second * 1)
