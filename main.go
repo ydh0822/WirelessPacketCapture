@@ -50,7 +50,6 @@ func WPC_() {
 	for pkt := range packets {
 		// fmt.Print("\033[H\033[2J")
 		fmt.Println(pkt)
-		pkt.
 		// time.Sleep(time.Second * 1)
 	}
 }
