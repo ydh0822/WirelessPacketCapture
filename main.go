@@ -79,7 +79,7 @@ func WPC_() {
 		fmt.Println("pkt========================================")
 		// fmt.Println(pkt)
 		fmt.Println(pkt.Data())
-		Pkt_Frame := pkt.Data()[9] + pkt.Data()[10] + pkt.Data()[11] + pkt.Data()[12]
+		Pkt_Frame := []byte{pkt.Data()[9], pkt.Data()[10], pkt.Data()[11], pkt.Data()[12]}
 		fmt.Println(Pkt_Frame)
 		fmt.Println(H_pack.Dot11_Frame_Control_Field)
 		fmt.Println("========================================")
