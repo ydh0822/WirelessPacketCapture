@@ -47,6 +47,18 @@ func New_H4uN_packet() *H4uN_packet {
 	return &New_pack
 }
 
+func CheckEq(a, b []byte) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
 func WPC_() {
 	fmt.Println("__start WPC__")
 	var name string
@@ -82,6 +94,11 @@ func WPC_() {
 		Pkt_Frame := []byte{pkt.Data()[9], pkt.Data()[10], pkt.Data()[11], pkt.Data()[12]}
 		fmt.Println(Pkt_Frame)
 		fmt.Println(H_pack.Dot11_Frame_Control_Field)
+
+		if CheckEq(H_pack.Dot11_Frame_Control_Field, Pkt_Frame) {
+			fmt.Println("correct!!")
+		}
+		fmt.Println(CheckEq(H_pack.Dot11_Frame_Control_Field, Pkt_Frame))
 		fmt.Println("========================================")
 		// time.Sleep(time.Second * 1)
 	}
