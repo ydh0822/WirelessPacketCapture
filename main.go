@@ -132,7 +132,7 @@ func WPC_() {
 
 			// fmt.Println(pkt)
 			fmt.Print("\033[H\033[2J")
-			fmt.Println("====== Raw Data Stream ====== Interface : ", name, "===== Channel : ", CH_rand, "==========")
+			fmt.Println("====== Raw Data Stream ==================== Interface : ", name, "===================== Channel : ", CH_rand, "==================")
 			// fmt.Println(pkt.Data())
 			// fmt.Println("============================================================================")
 			Pkt_Frame := []byte{pkt.Data()[9], pkt.Data()[10], pkt.Data()[11], pkt.Data()[12]}
@@ -186,7 +186,7 @@ func WPC_() {
 					for k := 0; k < len(packets_list); k++ {
 						tmp_int := strconv.FormatInt(int64(packets_list[k].ESSID_LEN), 10)
 						tmp_int_ch := strconv.FormatInt(int64(packets_list[k].CHANNEL), 10)
-						fmt.Println(center(packets_list[k].BSSID, 30-len(packets_list[k].BSSID), " "), center(packets_list[k].ESSID, 30-len(packets_list[k].ESSID), " "), center(tmp_int, 30, " "), center(tmp_int_ch, 30, " "))
+						fmt.Println(center(packets_list[k].BSSID, 30-len(packets_list[k].BSSID), " "), center(packets_list[k].ESSID, 30-len(packets_list[k].ESSID), " "), center(tmp_int, 28, " "), center(tmp_int_ch, 29, " "))
 					}
 					time.Sleep(300 * time.Millisecond)
 				} else {
@@ -197,9 +197,6 @@ func WPC_() {
 				continue
 			}
 			count++
-			fmt.Println("============================================================================")
-			fmt.Println(pkt.Data())
-			fmt.Println("============================================================================")
 		}
 	}
 }
