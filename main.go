@@ -189,7 +189,7 @@ func WPC_() {
 					for k := 0; k < len(packets_list); k++ {
 						tmp_int := strconv.FormatInt(int64(packets_list[k].ESSID_LEN), 10)
 						tmp_int_ch := strconv.FormatInt(int64(packets_list[k].CHANNEL), 10)
-						fmt.Println(center(packets_list[k].BSSID, 30-len(packets_list[k].BSSID), " "), center(packets_list[k].ESSID, 30-len(packets_list[k].ESSID), " "), center(tmp_int, 28, " "), center(tmp_int_ch, 29, " "))
+						fmt.Println(center(packets_list[k].BSSID, 30-len(packets_list[k].BSSID), " "), center(packets_list[k].ESSID, 30-len(packets_list[k].ESSID), " "), center(tmp_int, 30-len(tmp_int), " "), center(tmp_int_ch, 30-len(tmp_int_ch), " "))
 					}
 					// time.Sleep(300 * time.Millisecond)
 				} else {
