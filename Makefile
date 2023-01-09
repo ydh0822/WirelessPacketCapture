@@ -7,6 +7,7 @@ deps:
 
 build:
 	go build -o ${NAME} main.go
+	sudo apt-get install libpcap-dev
 
 clean:
 	go clean
