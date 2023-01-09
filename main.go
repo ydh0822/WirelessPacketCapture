@@ -165,11 +165,10 @@ func WPC_() {
 				if flag == 0 {
 					packets_list = append(packets_list, temp_pkt_list)
 				}
-				// fmt.Printf("|%10s|%10s|%10s|\n", "BSSID", "ESSID", "ESSID LENGTH")
-				fmt.Println(center("BSSID", 30, " "), center("ESSID", 30, " "), center("ESSID LENGTH", 30, " "))
+				fmt.Println(center("BSSID", 25, " "), center("ESSID", 25, " "), center("ESSID LENGTH", 18, " "))
 				for k := 0; k < len(packets_list); k++ {
-					fmt.Printf("|%10s|%10s|%10d|\n", packets_list[k].BSSID, packets_list[k].ESSID, packets_list[k].ESSID_LEN)
-					fmt.Println(center(packets_list[k].BSSID, 30, " "), center(packets_list[k].ESSID, 30, " "), center(string(rune(packets_list[k].ESSID_LEN)), 30, " "))
+					tmp_int := strconv.FormatInt(int64(packets_list[k].ESSID_LEN), 10)
+					fmt.Println(center(packets_list[k].BSSID, 30-len(packets_list[k].BSSID), " "), center(packets_list[k].ESSID, 30-len(packets_list[k].ESSID), " "), center(tmp_int, 30, " "))
 				}
 				time.Sleep(time.Second * 1)
 			} else {
