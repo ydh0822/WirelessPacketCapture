@@ -79,9 +79,9 @@ func WPC_() {
 		fmt.Println("pkt========================================")
 		// fmt.Println(pkt)
 		fmt.Println(pkt.Data())
-		fmt.Println(pkt.Data()[0])
-		fmt.Println(pkt.Data()[1])
-		fmt.Println(pkt.Data()[2])
+		Pkt_Frame := pkt.Data()[9] + pkt.Data()[10] + pkt.Data()[11] + pkt.Data()[12]
+		fmt.Println(Pkt_Frame)
+		fmt.Println(H_pack.Dot11_Frame_Control_Field)
 		fmt.Println("========================================")
 		// time.Sleep(time.Second * 1)
 	}
