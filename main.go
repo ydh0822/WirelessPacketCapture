@@ -121,7 +121,9 @@ func WPC_() {
 				BSSID_Frame := []string{}
 				for j := 0; j < 6; j++ {
 					temp_BSSID_Frame = append(temp_BSSID_Frame, int64(pkt.Data()[34+j]))
-					BSSID_Frame[j] = ":"
+					if j%2 != 0 {
+						BSSID_Frame[j] = ":"
+					}
 					BSSID_Frame[j*2] = strconv.FormatInt(temp_BSSID_Frame[j], 16)
 				}
 				fmt.Println(temp_BSSID_Frame)
