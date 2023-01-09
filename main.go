@@ -95,7 +95,7 @@ func WPC_() {
 		handle, handle.LinkType()).Packets()
 	for pkt := range packets {
 		// fmt.Print("\033[H\033[2J")
-		if len(pkt.Data()) < 60 {
+		if len(pkt.Data()) < 99 {
 			continue
 		}
 		fmt.Println("pkt========================================")
@@ -103,10 +103,15 @@ func WPC_() {
 		fmt.Println(pkt.Data())
 		Pkt_Frame := []byte{pkt.Data()[9], pkt.Data()[10], pkt.Data()[11], pkt.Data()[12]}
 		if CheckEq(H_pack.Dot11_Frame_Control_Field, Pkt_Frame) {
-			fmt.Println("Find 0x8000!! It is 802.11 Packet")
+			fmt.Println("Find 0x0800!! It is 802.11 Packet")
+			temp_Frame := []byte{}
+			for i := 0; i < int(pkt.Data()[61]); i++ {
+				temp_Frame = append(temp_Frame, pkt.Data()[62+i])
+			}
+			fmt.Println(temp_Frame)
+			Name_Frame_Data := string(temp_Frame[:])
+			fmt.Println("String =", Name_Frame_Data)
 		}
-		temp_Frame := []byte{pkt.Data()[62], pkt.Data()[63], pkt.Data()[64], pkt.Data()[65]}
-		fmt.Println(temp_Frame)
 		fmt.Println("========================================")
 		// time.Sleep(time.Second * 1)
 	}
