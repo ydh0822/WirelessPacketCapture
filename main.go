@@ -36,6 +36,12 @@ type H4uN_packet struct {
 	ESSID_Footter             []byte
 }
 
+type H4uN_Com_packet struct {
+	ESSID     string
+	ESSID_LEN int
+	BSSID     string
+}
+
 func New_H4uN_packet() *H4uN_packet {
 	New_pack := H4uN_packet{}
 	s_Dot11_Sig := "08000000"
@@ -71,8 +77,6 @@ func WPC_() {
 	var CH int
 	fmt.Printf("Input Wireless interface Name : ")
 	fmt.Scanln(&name)
-	fmt.Printf("Input Packet Channel : (Hopping=0)")
-	fmt.Scanln(&CH)
 
 	if CH != 0 {
 		CH_str := strconv.Itoa(CH)
@@ -94,9 +98,6 @@ func WPC_() {
 		handle, handle.LinkType()).Packets()
 	for pkt := range packets {
 		// fmt.Print("\033[H\033[2J")
-		if len(pkt.Data()) < 150 {
-			continue
-		}
 		fmt.Println("pkt========================================")
 		// fmt.Println(pkt)
 		fmt.Println(pkt.Data())
@@ -115,7 +116,19 @@ func WPC_() {
 				fmt.Println(temp_Frame)
 				Name_Frame_Data := string(temp_Frame[:])
 				fmt.Println("ESSID =", Name_Frame_Data, "ESSID_LEN = ", int(pkt.Data()[61]))
+
+				temp_BSSID_Frame := []byte{pkt.Data()[34], pkt.Data()[35], pkt.Data()[36], pkt.Data()[37], pkt.Data()[38], pkt.Data()[39]}
+				fmt.Println(temp_BSSID_Frame)
+				BSSID_Frame := string(temp_BSSID_Frame[:])
+				fmt.Println(BSSID_Frame)
+				// strconv.FormatInt(int(pkt.Data()[34]), 16) + ":" + pkt.Data()[35] + ":" + pkt.Data()[36] + ":" + pkt.Data()[37] + ":" + pkt.Data()[38] + ":" + pkt.Data()[39]
+
+			} else {
+				continue
 			}
+		} else {
+			fmt.Println("Can't Find ESSID!!")
+			continue
 		}
 		fmt.Println("========================================")
 		// time.Sleep(time.Second * 1)
