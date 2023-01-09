@@ -110,16 +110,16 @@ func WPC_() {
 			continue
 		}
 		temp_pkt_list := H4uN_Com_packet{
-			ESSID:     "",
+			ESSID:     "NoName",
 			ESSID_LEN: 0,
 			BSSID:     "",
 		}
 
 		// fmt.Println(pkt)
 		fmt.Print("\033[H\033[2J")
-		fmt.Println("======Raw Data Stream======")
+		fmt.Println("======Raw Data Stream======Interface : ", name, "===============")
 		fmt.Println(pkt.Data())
-		fmt.Println("===========================")
+		fmt.Println("================================================================")
 		Pkt_Frame := []byte{pkt.Data()[9], pkt.Data()[10], pkt.Data()[11], pkt.Data()[12]}
 		if CheckEq(H_pack.Dot11_Frame_Control_Field, Pkt_Frame) {
 			// fmt.Println("Find 0x08000000!! It is 802.11 Packet")
