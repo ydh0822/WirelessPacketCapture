@@ -31,13 +31,14 @@ const (
 )
 
 type H4uN_packet struct {
-	Radiotap                  [24]byte
+	Radiotap                  [9]byte
 	Dot11_Frame_Control_Field []byte
+	Inner_data                []byte
 }
 
 func New_H4uN_packet() *H4uN_packet {
 	New_pack := H4uN_packet{}
-	s_temp := "0008"
+	s_temp := "08000000"
 	data, err := hex.DecodeString(s_temp)
 	if err != nil {
 		panic(err)
@@ -78,6 +79,9 @@ func WPC_() {
 		fmt.Println("pkt========================================")
 		// fmt.Println(pkt)
 		fmt.Println(pkt.Data())
+		fmt.Println(pkt.Data()[0])
+		fmt.Println(pkt.Data()[1])
+		fmt.Println(pkt.Data()[2])
 		fmt.Println("========================================")
 		// time.Sleep(time.Second * 1)
 	}
