@@ -33,17 +33,24 @@ const (
 type H4uN_packet struct {
 	Radiotap                  [9]byte
 	Dot11_Frame_Control_Field []byte
-	Inner_data                []byte
+	SSID                      []byte
+	SSID_Footter              []byte
 }
 
 func New_H4uN_packet() *H4uN_packet {
 	New_pack := H4uN_packet{}
-	s_temp := "08000000"
-	data, err := hex.DecodeString(s_temp)
+	s_Dot11_Sig := "08000000"
+	s_SSID_Footer := "01088284"
+	data1, err := hex.DecodeString(s_Dot11_Sig)
 	if err != nil {
 		panic(err)
 	}
-	New_pack.Dot11_Frame_Control_Field = data
+	data2, err := hex.DecodeString(s_SSID_Footer)
+	if err != nil {
+		panic(err)
+	}
+	New_pack.Dot11_Frame_Control_Field = data1
+	New_pack.SSID_Footter = data2
 	return &New_pack
 }
 
@@ -92,13 +99,11 @@ func WPC_() {
 		// fmt.Println(pkt)
 		fmt.Println(pkt.Data())
 		Pkt_Frame := []byte{pkt.Data()[9], pkt.Data()[10], pkt.Data()[11], pkt.Data()[12]}
-		fmt.Println(Pkt_Frame)
-		fmt.Println(H_pack.Dot11_Frame_Control_Field)
-
 		if CheckEq(H_pack.Dot11_Frame_Control_Field, Pkt_Frame) {
-			fmt.Println("correct!!")
+			fmt.Println("Find 0x8000!! It is 802.11 Packet")
 		}
-		fmt.Println(CheckEq(H_pack.Dot11_Frame_Control_Field, Pkt_Frame))
+		temp_Frame := []byte{pkt.Data()[62], pkt.Data()[63], pkt.Data()[64], pkt.Data()[65]}
+		fmt.Println(temp_Frame)
 		fmt.Println("========================================")
 		// time.Sleep(time.Second * 1)
 	}
