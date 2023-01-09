@@ -117,11 +117,15 @@ func WPC_() {
 				Name_Frame_Data := string(temp_Frame[:])
 				fmt.Println("ESSID =", Name_Frame_Data, "ESSID_LEN = ", int(pkt.Data()[61]))
 
-				temp_BSSID_Frame := []byte{pkt.Data()[34], pkt.Data()[35], pkt.Data()[36], pkt.Data()[37], pkt.Data()[38], pkt.Data()[39]}
+				temp_BSSID_Frame := []int64{}
+				BSSID_Frame := []string{}
+				for j := 0; j < 6; j++ {
+					temp_BSSID_Frame = append(temp_BSSID_Frame, int64(pkt.Data()[34+j]))
+					BSSID_Frame[j] = ":"
+					BSSID_Frame[j*2] = strconv.FormatInt(temp_BSSID_Frame[j], 16)
+				}
 				fmt.Println(temp_BSSID_Frame)
-				BSSID_Frame := string(temp_BSSID_Frame[:])
 				fmt.Println(BSSID_Frame)
-				// strconv.FormatInt(int(pkt.Data()[34]), 16) + ":" + pkt.Data()[35] + ":" + pkt.Data()[36] + ":" + pkt.Data()[37] + ":" + pkt.Data()[38] + ":" + pkt.Data()[39]
 
 			} else {
 				continue
