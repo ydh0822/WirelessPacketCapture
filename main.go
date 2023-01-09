@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/google/gopacket"
 	_ "github.com/google/gopacket/layers"
@@ -41,6 +42,7 @@ type H4uN_Com_packet struct {
 	ESSID     string
 	ESSID_LEN int
 	BSSID     string
+	CHANNEL   int
 }
 
 func center(s string, n int, fill string) string {
@@ -165,6 +167,7 @@ func WPC_() {
 					// fmt.Println(temp_BSSID_Frame)
 					BSSID_Frame := strings.Join(tmp_BSSID_Frame, "")
 					temp_pkt_list.BSSID = BSSID_Frame
+					temp_pkt_list.CHANNEL = CH_rand
 					// fmt.Println("BSSID = ", BSSID_Frame)
 					flag := 0
 					for w := 0; w < len(packets_list); w++ {
@@ -172,17 +175,20 @@ func WPC_() {
 							packets_list[w].BSSID = temp_pkt_list.BSSID
 							packets_list[w].ESSID = temp_pkt_list.ESSID
 							packets_list[w].ESSID_LEN = temp_pkt_list.ESSID_LEN
+							packets_list[w].CHANNEL = temp_pkt_list.CHANNEL
 							flag++
 						}
 					}
 					if flag != 1 {
 						packets_list = append(packets_list, temp_pkt_list)
 					}
-					fmt.Println(center("BSSID", 25, " "), center("ESSID", 25, " "), center("ESSID LENGTH", 18, " "))
+					fmt.Println(center("BSSID", 25, " "), center("ESSID", 25, " "), center("ESSID LENGTH", 18, " "), center("CHANNEL", 23, " "))
 					for k := 0; k < len(packets_list); k++ {
 						tmp_int := strconv.FormatInt(int64(packets_list[k].ESSID_LEN), 10)
-						fmt.Println(center(packets_list[k].BSSID, 30-len(packets_list[k].BSSID), " "), center(packets_list[k].ESSID, 30-len(packets_list[k].ESSID), " "), center(tmp_int, 30, " "))
+						tmp_int_ch := strconv.FormatInt(int64(packets_list[k].CHANNEL), 10)
+						fmt.Println(center(packets_list[k].BSSID, 30-len(packets_list[k].BSSID), " "), center(packets_list[k].ESSID, 30-len(packets_list[k].ESSID), " "), center(tmp_int, 30, " "), center(tmp_int_ch, 30, " "))
 					}
+					time.Sleep(300 * time.Millisecond)
 				} else {
 					continue
 				}
