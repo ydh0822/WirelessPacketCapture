@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os/exec"
 	"strconv"
+	"strings"
 
 	"github.com/google/gopacket"
 	_ "github.com/google/gopacket/layers"
@@ -97,6 +98,9 @@ func WPC_() {
 	packets := gopacket.NewPacketSource(
 		handle, handle.LinkType()).Packets()
 	for pkt := range packets {
+		if len(pkt.Data()) < 150 {
+			continue
+		}
 		// fmt.Print("\033[H\033[2J")
 		fmt.Println("pkt========================================")
 		// fmt.Println(pkt)
@@ -118,19 +122,19 @@ func WPC_() {
 				fmt.Println("ESSID =", Name_Frame_Data, "ESSID_LEN = ", int(pkt.Data()[61]))
 
 				temp_BSSID_Frame := []int64{}
-				BSSID_Frame := []string{}
+				tmp_BSSID_Frame := []string{}
 				for j := 0; j < 6; j++ {
 					temp_BSSID_Frame = append(temp_BSSID_Frame, int64(pkt.Data()[34+j]))
-					BSSID_Frame = append(BSSID_Frame, fmt.Sprintf("%02x", temp_BSSID_Frame[j]))
+					tmp_BSSID_Frame = append(tmp_BSSID_Frame, fmt.Sprintf("%02x", temp_BSSID_Frame[j]))
 					// BSSID_Frame = append(BSSID_Frame, strconv.FormatInt(temp_BSSID_Frame[j], 16))
 					if j != 5 {
-						BSSID_Frame = append(BSSID_Frame, ":")
+						tmp_BSSID_Frame = append(tmp_BSSID_Frame, ":")
 					}
 
 				}
-				fmt.Println(temp_BSSID_Frame)
+				// fmt.Println(temp_BSSID_Frame)
+				BSSID_Frame := strings.Join(tmp_BSSID_Frame, "")
 				fmt.Println(BSSID_Frame)
-
 			} else {
 				continue
 			}
