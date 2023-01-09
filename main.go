@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/google/gopacket"
 	_ "github.com/google/gopacket/layers"
@@ -109,7 +110,10 @@ func WPC_() {
 		}
 
 		// fmt.Println(pkt)
+		fmt.Print("\033[H\033[2J")
+		fmt.Println("======Raw Data Stream======")
 		fmt.Println(pkt.Data())
+		fmt.Println("===========================")
 		Pkt_Frame := []byte{pkt.Data()[9], pkt.Data()[10], pkt.Data()[11], pkt.Data()[12]}
 		if CheckEq(H_pack.Dot11_Frame_Control_Field, Pkt_Frame) {
 			// fmt.Println("Find 0x08000000!! It is 802.11 Packet")
@@ -155,9 +159,11 @@ func WPC_() {
 				if flag == 0 {
 					packets_list = append(packets_list, temp_pkt_list)
 				}
-				fmt.Println("start!!========================================")
-				fmt.Println(packets_list)
-				fmt.Println("========================================")
+				fmt.Printf("|%10s|%10s|%10s|\n", "BSSID", "ESSID", "ESSID LENGTH")
+				for k := 0; k < len(packets_list); k++ {
+					fmt.Printf("|%10s|%10s|%10d|\n", packets_list[k].BSSID, packets_list[k].ESSID, packets_list[k].ESSID_LEN)
+				}
+				time.Sleep(time.Second * 1)
 			} else {
 				continue
 			}
@@ -165,10 +171,5 @@ func WPC_() {
 			// fmt.Println("Can't Find ESSID!!")
 			continue
 		}
-
-		// fmt.Print("\033[H\033[2J")
-
-		// fmt.Println("========================================")
-		// time.Sleep(time.Second * 1)
 	}
 }
