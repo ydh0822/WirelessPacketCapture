@@ -117,9 +117,9 @@ func WPC_() {
 
 		// fmt.Println(pkt)
 		fmt.Print("\033[H\033[2J")
-		fmt.Println("======Raw Data Stream======Interface : ", name, "===============")
+		fmt.Println("====== Raw Data Stream ====== Interface : ", name, "===============")
 		fmt.Println(pkt.Data())
-		fmt.Println("================================================================")
+		fmt.Println("============================================================================")
 		Pkt_Frame := []byte{pkt.Data()[9], pkt.Data()[10], pkt.Data()[11], pkt.Data()[12]}
 		if CheckEq(H_pack.Dot11_Frame_Control_Field, Pkt_Frame) {
 			// fmt.Println("Find 0x08000000!! It is 802.11 Packet")
