@@ -85,8 +85,8 @@ func WPC_() {
 	}
 
 	H_pack := New_H4uN_packet()
-	fmt.Println("H_pack파싱")
-	fmt.Println(H_pack)
+	// fmt.Println("H_pack파싱")
+	// fmt.Println(H_pack)
 
 	handle, err := pcap.OpenLive(name, defaultSnapLen, true,
 		pcap.BlockForever)
@@ -95,31 +95,38 @@ func WPC_() {
 	}
 	defer handle.Close()
 
-	packets := gopacket.NewPacketSource(
-		handle, handle.LinkType()).Packets()
+	packets := gopacket.NewPacketSource(handle, handle.LinkType()).Packets()
+	packets_list := []H4uN_Com_packet{}
+
 	for pkt := range packets {
 		if len(pkt.Data()) < 150 {
 			continue
 		}
-		// fmt.Print("\033[H\033[2J")
-		fmt.Println("pkt========================================")
+		temp_pkt_list := H4uN_Com_packet{
+			ESSID:     "",
+			ESSID_LEN: 0,
+			BSSID:     "",
+		}
+
 		// fmt.Println(pkt)
 		fmt.Println(pkt.Data())
 		Pkt_Frame := []byte{pkt.Data()[9], pkt.Data()[10], pkt.Data()[11], pkt.Data()[12]}
 		if CheckEq(H_pack.Dot11_Frame_Control_Field, Pkt_Frame) {
-			fmt.Println("Find 0x08000000!! It is 802.11 Packet")
+			// fmt.Println("Find 0x08000000!! It is 802.11 Packet")
 			CheckVal := 62 + int(pkt.Data()[61])
 			Name_Footer_Frame := []byte{pkt.Data()[CheckVal], pkt.Data()[CheckVal+1], pkt.Data()[CheckVal+2], pkt.Data()[CheckVal+3]}
-			fmt.Println(Name_Footer_Frame)
+			// fmt.Println(Name_Footer_Frame)
 			if CheckEq(H_pack.ESSID_Footter, Name_Footer_Frame) {
-				fmt.Println("Find 0x01088284!! It is name Field!!")
+				// fmt.Println("Find 0x01088284!! It is name Field!!")
 				temp_Frame := []byte{}
 				for i := 0; i < int(pkt.Data()[61]); i++ {
 					temp_Frame = append(temp_Frame, pkt.Data()[62+i])
 				}
-				fmt.Println(temp_Frame)
+				// fmt.Println(temp_Frame)
 				Name_Frame_Data := string(temp_Frame[:])
-				fmt.Println("ESSID =", Name_Frame_Data, "ESSID_LEN = ", int(pkt.Data()[61]))
+				temp_pkt_list.ESSID = Name_Frame_Data
+				temp_pkt_list.ESSID_LEN = int(pkt.Data()[61])
+				// fmt.Println("ESSID =", Name_Frame_Data, "ESSID_LEN = ", int(pkt.Data()[61]))
 
 				temp_BSSID_Frame := []int64{}
 				tmp_BSSID_Frame := []string{}
@@ -134,15 +141,23 @@ func WPC_() {
 				}
 				// fmt.Println(temp_BSSID_Frame)
 				BSSID_Frame := strings.Join(tmp_BSSID_Frame, "")
-				fmt.Println(BSSID_Frame)
+				temp_pkt_list.BSSID = BSSID_Frame
+				// fmt.Println("BSSID = ", BSSID_Frame)
+				packets_list = append(packets_list, temp_pkt_list)
+				fmt.Println("start!!========================================")
+				fmt.Println(packets_list)
+				fmt.Println("========================================")
 			} else {
 				continue
 			}
 		} else {
-			fmt.Println("Can't Find ESSID!!")
+			// fmt.Println("Can't Find ESSID!!")
 			continue
 		}
-		fmt.Println("========================================")
+
+		// fmt.Print("\033[H\033[2J")
+
+		// fmt.Println("========================================")
 		// time.Sleep(time.Second * 1)
 	}
 }
