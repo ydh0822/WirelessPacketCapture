@@ -143,7 +143,18 @@ func WPC_() {
 				BSSID_Frame := strings.Join(tmp_BSSID_Frame, "")
 				temp_pkt_list.BSSID = BSSID_Frame
 				// fmt.Println("BSSID = ", BSSID_Frame)
-				packets_list = append(packets_list, temp_pkt_list)
+				flag := 0
+				for w := 0; w < len(packets_list); w++ {
+					if temp_pkt_list.ESSID == packets_list[w].ESSID {
+						packets_list[w].BSSID = temp_pkt_list.BSSID
+						packets_list[w].ESSID = temp_pkt_list.ESSID
+						packets_list[w].ESSID_LEN = temp_pkt_list.ESSID_LEN
+						flag++
+					}
+				}
+				if flag == 0 {
+					packets_list = append(packets_list, temp_pkt_list)
+				}
 				fmt.Println("start!!========================================")
 				fmt.Println(packets_list)
 				fmt.Println("========================================")
