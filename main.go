@@ -84,98 +84,114 @@ func WPC_() {
 	var CH int
 	fmt.Printf("Input Wireless interface Name : ")
 	fmt.Scanln(&name)
-
+	fmt.Printf("Input Wireless Channel(0 == default) : ")
+	fmt.Scanln(&CH)
 	if CH != 0 {
 		CH_str := strconv.Itoa(CH)
 		ExcuteCMD("sudo", "iwconfig", name, CH_str)
-	}
+	} else {
 
-	H_pack := New_H4uN_packet()
-	// fmt.Println("H_pack파싱")
-	// fmt.Println(H_pack)
+		H_pack := New_H4uN_packet()
+		// fmt.Println("H_pack파싱")
+		// fmt.Println(H_pack)
 
-	handle, err := pcap.OpenLive(name, defaultSnapLen, true,
-		pcap.BlockForever)
-	if err != nil {
-		panic(err)
-	}
-	defer handle.Close()
-
-	packets := gopacket.NewPacketSource(handle, handle.LinkType()).Packets()
-	packets_list := []H4uN_Com_packet{}
-
-	for pkt := range packets {
-		if len(pkt.Data()) < 150 {
-			continue
+		handle, err := pcap.OpenLive(name, defaultSnapLen, true,
+			pcap.BlockForever)
+		if err != nil {
+			panic(err)
 		}
-		temp_pkt_list := H4uN_Com_packet{
-			ESSID:     "NoName",
-			ESSID_LEN: 0,
-			BSSID:     "",
-		}
+		defer handle.Close()
 
-		// fmt.Println(pkt)
-		fmt.Print("\033[H\033[2J")
-		fmt.Println("====== Raw Data Stream ====== Interface : ", name, "===============")
-		fmt.Println(pkt.Data())
-		fmt.Println("============================================================================")
-		Pkt_Frame := []byte{pkt.Data()[9], pkt.Data()[10], pkt.Data()[11], pkt.Data()[12]}
-		if CheckEq(H_pack.Dot11_Frame_Control_Field, Pkt_Frame) {
-			// fmt.Println("Find 0x08000000!! It is 802.11 Packet")
-			CheckVal := 62 + int(pkt.Data()[61])
-			Name_Footer_Frame := []byte{pkt.Data()[CheckVal], pkt.Data()[CheckVal+1], pkt.Data()[CheckVal+2], pkt.Data()[CheckVal+3]}
-			// fmt.Println(Name_Footer_Frame)
-			if CheckEq(H_pack.ESSID_Footter, Name_Footer_Frame) {
-				// fmt.Println("Find 0x01088284!! It is name Field!!")
-				temp_Frame := []byte{}
-				for i := 0; i < int(pkt.Data()[61]); i++ {
-					temp_Frame = append(temp_Frame, pkt.Data()[62+i])
+		packets := gopacket.NewPacketSource(handle, handle.LinkType()).Packets()
+		packets_list := []H4uN_Com_packet{}
+		count := 0
+		CH_rand := 1
+		for pkt := range packets {
+			if count%10 == 0 {
+				if CH_rand == 20 {
+					CH_rand = 1
 				}
-				// fmt.Println(temp_Frame)
-				Name_Frame_Data := string(temp_Frame[:])
-				temp_pkt_list.ESSID = Name_Frame_Data
-				temp_pkt_list.ESSID_LEN = int(pkt.Data()[61])
-				// fmt.Println("ESSID =", Name_Frame_Data, "ESSID_LEN = ", int(pkt.Data()[61]))
-
-				temp_BSSID_Frame := []int64{}
-				tmp_BSSID_Frame := []string{}
-				for j := 0; j < 6; j++ {
-					temp_BSSID_Frame = append(temp_BSSID_Frame, int64(pkt.Data()[34+j]))
-					tmp_BSSID_Frame = append(tmp_BSSID_Frame, fmt.Sprintf("%02x", temp_BSSID_Frame[j]))
-					// BSSID_Frame = append(BSSID_Frame, strconv.FormatInt(temp_BSSID_Frame[j], 16))
-					if j != 5 {
-						tmp_BSSID_Frame = append(tmp_BSSID_Frame, ":")
-					}
-
+				tmp_CH := strconv.FormatInt(int64(CH_rand), 10)
+				ExcuteCMD("sudo", "iwconfig", name, tmp_CH)
+				CH_rand, err = strconv.Atoi(tmp_CH)
+				if err != nil {
+					fmt.Println(err)
 				}
-				// fmt.Println(temp_BSSID_Frame)
-				BSSID_Frame := strings.Join(tmp_BSSID_Frame, "")
-				temp_pkt_list.BSSID = BSSID_Frame
-				// fmt.Println("BSSID = ", BSSID_Frame)
-				flag := 0
-				for w := 0; w < len(packets_list); w++ {
-					if temp_pkt_list.ESSID == packets_list[w].ESSID {
-						packets_list[w].BSSID = temp_pkt_list.BSSID
-						packets_list[w].ESSID = temp_pkt_list.ESSID
-						packets_list[w].ESSID_LEN = temp_pkt_list.ESSID_LEN
-						flag++
-					}
-				}
-				if flag != 1 {
-					packets_list = append(packets_list, temp_pkt_list)
-				}
-				fmt.Println(center("BSSID", 25, " "), center("ESSID", 25, " "), center("ESSID LENGTH", 18, " "))
-				for k := 0; k < len(packets_list); k++ {
-					tmp_int := strconv.FormatInt(int64(packets_list[k].ESSID_LEN), 10)
-					fmt.Println(center(packets_list[k].BSSID, 30-len(packets_list[k].BSSID), " "), center(packets_list[k].ESSID, 30-len(packets_list[k].ESSID), " "), center(tmp_int, 30, " "))
-				}
-				// time.Sleep(time.Second * 1)
-			} else {
+				CH_rand++
+			}
+			if len(pkt.Data()) < 150 {
 				continue
 			}
-		} else {
-			// fmt.Println("Can't Find ESSID!!")
-			continue
+			temp_pkt_list := H4uN_Com_packet{
+				ESSID:     "NoName",
+				ESSID_LEN: 0,
+				BSSID:     "",
+			}
+
+			// fmt.Println(pkt)
+			fmt.Print("\033[H\033[2J")
+			fmt.Println("====== Raw Data Stream ====== Interface : ", name, "===== Channel : ", CH_rand, "==========")
+			fmt.Println(pkt.Data())
+			fmt.Println("============================================================================")
+			Pkt_Frame := []byte{pkt.Data()[9], pkt.Data()[10], pkt.Data()[11], pkt.Data()[12]}
+			if CheckEq(H_pack.Dot11_Frame_Control_Field, Pkt_Frame) {
+				// fmt.Println("Find 0x08000000!! It is 802.11 Packet")
+				CheckVal := 62 + int(pkt.Data()[61])
+				Name_Footer_Frame := []byte{pkt.Data()[CheckVal], pkt.Data()[CheckVal+1], pkt.Data()[CheckVal+2], pkt.Data()[CheckVal+3]}
+				// fmt.Println(Name_Footer_Frame)
+				if CheckEq(H_pack.ESSID_Footter, Name_Footer_Frame) {
+					// fmt.Println("Find 0x01088284!! It is name Field!!")
+					temp_Frame := []byte{}
+					for i := 0; i < int(pkt.Data()[61]); i++ {
+						temp_Frame = append(temp_Frame, pkt.Data()[62+i])
+					}
+					// fmt.Println(temp_Frame)
+					Name_Frame_Data := string(temp_Frame[:])
+					temp_pkt_list.ESSID = Name_Frame_Data
+					temp_pkt_list.ESSID_LEN = int(pkt.Data()[61])
+					// fmt.Println("ESSID =", Name_Frame_Data, "ESSID_LEN = ", int(pkt.Data()[61]))
+
+					temp_BSSID_Frame := []int64{}
+					tmp_BSSID_Frame := []string{}
+					for j := 0; j < 6; j++ {
+						temp_BSSID_Frame = append(temp_BSSID_Frame, int64(pkt.Data()[34+j]))
+						tmp_BSSID_Frame = append(tmp_BSSID_Frame, fmt.Sprintf("%02x", temp_BSSID_Frame[j]))
+						// BSSID_Frame = append(BSSID_Frame, strconv.FormatInt(temp_BSSID_Frame[j], 16))
+						if j != 5 {
+							tmp_BSSID_Frame = append(tmp_BSSID_Frame, ":")
+						}
+
+					}
+					// fmt.Println(temp_BSSID_Frame)
+					BSSID_Frame := strings.Join(tmp_BSSID_Frame, "")
+					temp_pkt_list.BSSID = BSSID_Frame
+					// fmt.Println("BSSID = ", BSSID_Frame)
+					flag := 0
+					for w := 0; w < len(packets_list); w++ {
+						if temp_pkt_list.ESSID == packets_list[w].ESSID {
+							packets_list[w].BSSID = temp_pkt_list.BSSID
+							packets_list[w].ESSID = temp_pkt_list.ESSID
+							packets_list[w].ESSID_LEN = temp_pkt_list.ESSID_LEN
+							flag++
+						}
+					}
+					if flag != 1 {
+						packets_list = append(packets_list, temp_pkt_list)
+					}
+					fmt.Println(center("BSSID", 25, " "), center("ESSID", 25, " "), center("ESSID LENGTH", 18, " "))
+					for k := 0; k < len(packets_list); k++ {
+						tmp_int := strconv.FormatInt(int64(packets_list[k].ESSID_LEN), 10)
+						fmt.Println(center(packets_list[k].BSSID, 30-len(packets_list[k].BSSID), " "), center(packets_list[k].ESSID, 30-len(packets_list[k].ESSID), " "), center(tmp_int, 30, " "))
+					}
+					// time.Sleep(time.Second * 1)
+				} else {
+					continue
+				}
+			} else {
+				// fmt.Println("Can't Find ESSID!!")
+				continue
+			}
+			count++
 		}
 	}
 }
