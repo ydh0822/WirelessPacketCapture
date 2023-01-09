@@ -105,7 +105,7 @@ func WPC_() {
 	packets_list := []H4uN_Com_packet{}
 
 	for pkt := range packets {
-		if len(pkt.Data()) < 100 {
+		if len(pkt.Data()) < 150 {
 			continue
 		}
 		temp_pkt_list := H4uN_Com_packet{
@@ -161,7 +161,7 @@ func WPC_() {
 						flag++
 					}
 				}
-				if flag != 0 {
+				if flag != 1 {
 					packets_list = append(packets_list, temp_pkt_list)
 				}
 				fmt.Println(center("BSSID", 25, " "), center("ESSID", 25, " "), center("ESSID LENGTH", 18, " "))
