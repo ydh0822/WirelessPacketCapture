@@ -5,4 +5,4 @@ H4uN
 
 Usage : 
 You must run with sudo privileges to obtain iwconfig privileges.
-https://github.com/ydh0822/WirelessPacketCapture/issues/1#issue-1525929940
+<img width="100%" src="https://user-images.githubusercontent.com/73634063/211358867-271ac388-4277-4ae8-a815-2cd37b0e3cf1.mp4"/>
