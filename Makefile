@@ -1,4 +1,4 @@
-NAME=WPC(WirelessPacketCapture)
+NAME=WPC
 
 all: deps build
 
