@@ -44,6 +44,12 @@ type H4uN_Com_packet struct {
 	BSSID     string
 }
 
+func center(s string, n int, fill string) string {
+	div := n / 2
+
+	return strings.Repeat(fill, div) + s + strings.Repeat(fill, div)
+}
+
 func New_H4uN_packet() *H4uN_packet {
 	New_pack := H4uN_packet{}
 	s_Dot11_Sig := "08000000"
@@ -159,9 +165,11 @@ func WPC_() {
 				if flag == 0 {
 					packets_list = append(packets_list, temp_pkt_list)
 				}
-				fmt.Printf("|%10s|%10s|%10s|\n", "BSSID", "ESSID", "ESSID LENGTH")
+				// fmt.Printf("|%10s|%10s|%10s|\n", "BSSID", "ESSID", "ESSID LENGTH")
+				fmt.Println(center("BSSID", 30, " "), center("ESSID", 30, " "), center("ESSID LENGTH", 30, " "))
 				for k := 0; k < len(packets_list); k++ {
 					fmt.Printf("|%10s|%10s|%10d|\n", packets_list[k].BSSID, packets_list[k].ESSID, packets_list[k].ESSID_LEN)
+					fmt.Println(center(packets_list[k].BSSID, 30, " "), center(packets_list[k].ESSID, 30, " "), center(string(rune(packets_list[k].ESSID_LEN)), 30, " "))
 				}
 				time.Sleep(time.Second * 1)
 			} else {
