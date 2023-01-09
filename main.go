@@ -12,13 +12,13 @@ func main() {
 	WPC_()
 }
 
-func (p *PacketSource) H4uN_Packets(int channels) chan Packet {
-	if p.c == nil {
-		p.c = make(chan Packet, 1000)
-		go p.packetsToChannel()
-	}
-	return p.c
-}
+// func (p *PacketSource) H4uN_Packets(int channels) chan Packet {
+// 	if p.c == nil {
+// 		p.c = make(chan Packet, 1000)
+// 		go p.packetsToChannel()
+// 	}
+// 	return p.c
+// }
 
 const (
 	// The same default as tcpdump.
@@ -43,7 +43,7 @@ func WPC_() {
 	// 	panic(err)
 	// }
 	packets := gopacket.NewPacketSource(
-		handle, handle.LinkType()).H4uN_Packets()
+		handle, handle.LinkType()).Packets()
 
 	fmt.Println(packets)
 	fmt.Println("========================================")
