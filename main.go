@@ -139,6 +139,9 @@ func WPC_() {
 			if CheckEq(H_pack.Dot11_Frame_Control_Field, Pkt_Frame) {
 				// fmt.Println("Find 0x08000000!! It is 802.11 Packet")
 				CheckVal := 62 + int(pkt.Data()[61])
+				if CheckVal >= len(pkt.Data()) {
+					continue
+				}
 				Name_Footer_Frame := []byte{pkt.Data()[CheckVal], pkt.Data()[CheckVal+1], pkt.Data()[CheckVal+2], pkt.Data()[CheckVal+3]}
 				// fmt.Println(Name_Footer_Frame)
 				if CheckEq(H_pack.ESSID_Footter, Name_Footer_Frame) {
